@@ -102,8 +102,9 @@ export const CoursePlayerPage: React.FC = () => {
   );
 
   return (
-    <div className="flex h-[calc(100vh-64px)] w-full overflow-hidden bg-white dark:bg-slate-950">
+    <div className="flex min-h-[calc(100dvh-64px)] md:h-[calc(100dvh-64px)] w-full max-w-full overflow-x-hidden bg-white dark:bg-slate-950">
       {/* Desktop Curriculum Sidebar */}
+
       <div className="hidden lg:block w-80 h-full flex-shrink-0">
         <CurriculumSidebar
           course={activeCourse}

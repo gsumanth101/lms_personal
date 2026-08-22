@@ -150,9 +150,17 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const handleToggleFullscreen = () => {
     if (!containerRef.current) return;
     if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen().catch(() => {});
+      if (containerRef.current.requestFullscreen) {
+        containerRef.current.requestFullscreen().catch(() => {});
+      } else if ((containerRef.current as any).webkitRequestFullscreen) {
+        (containerRef.current as any).webkitRequestFullscreen();
+      }
     } else {
-      document.exitFullscreen().catch(() => {});
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      } else if ((document as any).webkitExitFullscreen) {
+        (document as any).webkitExitFullscreen();
+      }
     }
   };
 
@@ -161,13 +169,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const progressPercent = Math.min(100, Math.round((watchTime / duration) * 100));
 
   return (
-    <div className="w-full space-y-3 select-none">
+    <div className="w-full max-w-full space-y-2.5 sm:space-y-3 select-none">
       {/* Auto-Next Video Countdown Banner */}
       {autoNextCountdown !== null && (
-        <div className="p-3.5 px-4 rounded-2xl bg-emerald-950/95 border border-emerald-500/60 text-white text-xs flex flex-wrap items-center justify-between gap-3 shadow-2xl animate-fade-in">
+        <div className="p-3 px-4 rounded-2xl bg-emerald-950/95 border border-emerald-500/60 text-white text-xs flex flex-wrap items-center justify-between gap-3 shadow-2xl animate-fade-in">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-emerald-600/40 border border-emerald-500/50 flex items-center justify-center text-emerald-300 shadow-sm">
-              <CheckCircle className="w-5 h-5" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-600/40 border border-emerald-500/50 flex items-center justify-center text-emerald-300 shadow-sm flex-shrink-0">
+              <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
               <span className="font-extrabold text-emerald-300 uppercase tracking-wider text-[10px]">Lesson Completed!</span>
@@ -201,7 +209,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       {showResumeBanner && (
         <div className="p-3 px-4 rounded-2xl bg-indigo-950/80 border border-indigo-500/40 text-white text-xs flex flex-wrap items-center justify-between gap-3 shadow-lg animate-fade-in">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-indigo-600/40 flex items-center justify-center text-indigo-300">
+            <div className="w-7 h-7 rounded-lg bg-indigo-600/40 flex items-center justify-center text-indigo-300 flex-shrink-0">
               <Clock className="w-4 h-4" />
             </div>
             <span>
@@ -226,23 +234,19 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         </div>
       )}
 
-
-      {/* Main Video Canvas: YouTube-style full bleed on mobile, rounded on desktop */}
+      {/* Main Video Canvas: 100% responsive 16:9 container, safe on mobile portrait and landscape */}
       <div
         ref={containerRef}
-        className="relative w-full aspect-video bg-black rounded-none sm:rounded-3xl overflow-hidden shadow-2xl border-0 sm:border border-slate-800/80"
+        className="video-container bg-black rounded-none sm:rounded-2xl md:rounded-3xl shadow-xl sm:border border-slate-800/80"
       >
-        {/* Top-Right Click Blocker / Overlay: Completely hides and prevents popout */}
-        <div className="absolute top-0 right-0 w-20 h-14 z-20 pointer-events-auto" />
-
         {/* Loading Progress Bar at top edge */}
         {isBuffering && (
-          <div className="absolute top-0 left-0 right-0 h-1 bg-indigo-950 z-20 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-indigo-950 z-10 overflow-hidden pointer-events-none">
             <div className="w-full h-full bg-gradient-to-r from-indigo-500 via-indigo-400 to-emerald-400 animate-pulse" />
           </div>
         )}
 
-        {/* Video Stream Iframe (cropped -54px at top to eliminate Google Drive header bar & pop-out icon) */}
+        {/* Video Stream Iframe (Native 100% responsive without scaling distortions) */}
         {streamSrc ? (
           <iframe
             ref={iframeRef}
@@ -250,8 +254,9 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             src={streamSrc}
             title={lesson.title}
             allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+            allowFullScreen
             onLoad={() => setIsBuffering(false)}
-            className="w-full absolute left-0 right-0 -top-[54px] h-[calc(100%+54px)] border-0 bg-black"
+            className="w-full h-full inset-0 absolute border-0 block bg-black"
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-slate-900 text-white">
@@ -259,6 +264,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           </div>
         )}
       </div>
+
 
       {/* YouTube-style Horizontal Scrollable Action Pills Bar */}
       <div className="py-2.5 px-3 sm:px-4 rounded-none sm:rounded-2xl bg-white dark:bg-slate-900 border-b sm:border border-slate-200/80 dark:border-slate-800/80 shadow-xs">
