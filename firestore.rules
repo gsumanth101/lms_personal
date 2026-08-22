@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Courses & Lessons: Publicly readable for all learners
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if false;
+
+      match /lessons/{lessonId} {
+        allow read: if true;
+        allow write: if false;
+      }
+    }
+
+    // User profiles & personal learning data: enrollments, progress, notes, tasks, goals, schedules
+    match /users/{userId} {
+      allow read, write: if true;
+
+      match /{allSubcollections=**} {
+        allow read, write: if true;
+      }
+    }
+
+    // Presence collection: Active online learners
+    match /presence/{userId} {
+      allow read, write: if true;
+    }
+
+    // Verifiable completion certificates
+    match /certificates/{certId} {
+      allow read, write: if true;
+    }
+  }
+}
