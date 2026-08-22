@@ -140,23 +140,7 @@ export const CoursePlayerPage: React.FC = () => {
 
 
       {/* Main Player & Workspace Canvas */}
-      <div className="flex-1 flex flex-col h-full overflow-y-auto subtle-scroll p-4 md:p-6 space-y-6">
-        {/* Top Header Mobile Toggle */}
-        <div className="flex items-center justify-between lg:hidden pb-2 border-b border-slate-200 dark:border-slate-800">
-          <Button
-            size="small"
-            variant="outlined"
-            onClick={() => setMobileCurriculumOpen(true)}
-            startIcon={<Menu className="w-4 h-4" />}
-          >
-            Curriculum ({courseLessons.length})
-          </Button>
-
-          <span className="text-xs font-semibold text-slate-500 truncate max-w-[200px]">
-            {activeLesson.title}
-          </span>
-        </div>
-
+      <div className="flex-1 flex flex-col h-full overflow-y-auto subtle-scroll p-0 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
         {/* Video Player Canvas */}
         <div className="max-w-5xl mx-auto w-full">
           <VideoPlayer
@@ -173,23 +157,32 @@ export const CoursePlayerPage: React.FC = () => {
         </div>
 
         {/* Lesson Details & Workspace Tabs */}
-        <div className="max-w-5xl mx-auto w-full space-y-6 pb-12">
-          {/* Lesson Header Title & Status */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+        <div className="max-w-5xl mx-auto w-full space-y-4 sm:space-y-6 px-3 sm:px-0 pb-16">
+          {/* YouTube-style Lesson Header Card */}
+          <div className="p-3.5 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/70 px-2 py-0.5 rounded-md">
                   {activeCourse.title}
                 </span>
-                <span className="text-slate-400">•</span>
-                <span className="text-xs text-slate-500">{activeLesson.moduleName}</span>
+                <span className="text-slate-400 text-xs">•</span>
+                <span className="text-xs text-slate-500 font-medium">{activeLesson.moduleName || 'Curriculum'}</span>
               </div>
-              <h1 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">
+              <h1 className="text-base sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white line-clamp-2">
                 {activeLesson.title}
               </h1>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Mobile / Desktop Curriculum Trigger */}
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
+              <button
+                onClick={() => setMobileCurriculumOpen(true)}
+                className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition border border-slate-200 dark:border-slate-700"
+              >
+                <Menu className="w-3.5 h-3.5" />
+                <span>Lessons ({courseLessons.length})</span>
+              </button>
+
               <Button
                 variant={isCurrentLessonDone ? 'outlined' : 'contained'}
                 color={isCurrentLessonDone ? 'success' : 'primary'}
@@ -198,16 +191,17 @@ export const CoursePlayerPage: React.FC = () => {
                 size="small"
                 sx={{
                   fontWeight: 700,
-                  fontSize: '0.8rem',
+                  fontSize: '0.75rem',
                   borderRadius: 2,
                   px: 2,
+                  py: 0.6,
                 }}
               >
-                {isCurrentLessonDone ? 'Completed ✓' : 'Mark Lesson Complete'}
+                {isCurrentLessonDone ? 'Completed ✓' : 'Mark Complete'}
               </Button>
             </div>
-
           </div>
+
 
           {/* Workspace Tabs */}
           <div>

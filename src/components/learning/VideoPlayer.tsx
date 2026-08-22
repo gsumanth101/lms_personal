@@ -13,8 +13,8 @@ import {
   Rewind,
 } from 'lucide-react';
 
-import { Button, Tooltip } from '@mui/material';
 import type { Lesson } from '../../types';
+
 
 interface VideoPlayerProps {
   lesson: Lesson;
@@ -227,10 +227,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       )}
 
 
-      {/* Main Video Canvas: Unobstructed Player without Google Drive Pop-out Header */}
+      {/* Main Video Canvas: YouTube-style full bleed on mobile, rounded on desktop */}
       <div
         ref={containerRef}
-        className="relative w-full aspect-video bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border border-slate-800"
+        className="relative w-full aspect-video bg-black rounded-none sm:rounded-3xl overflow-hidden shadow-2xl border-0 sm:border border-slate-800/80"
       >
         {/* Top-Right Click Blocker / Overlay: Completely hides and prevents popout */}
         <div className="absolute top-0 right-0 w-20 h-14 z-20 pointer-events-auto" />
@@ -251,7 +251,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             title={lesson.title}
             allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
             onLoad={() => setIsBuffering(false)}
-            className="w-full absolute left-0 right-0 -top-[54px] h-[calc(100%+54px)] border-0 bg-slate-950"
+            className="w-full absolute left-0 right-0 -top-[54px] h-[calc(100%+54px)] border-0 bg-black"
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-slate-900 text-white">
@@ -260,124 +260,99 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         )}
       </div>
 
-
-      {/* External Player Control Bar: Cleanly placed BELOW the video frame so NO native player controls are covered */}
-      <div className="p-3.5 px-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
-        {/* Left Side: Navigation & Quick Jump */}
-        <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
-          {hasPrevious && onPreviousLesson && (
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={onPreviousLesson}
-              startIcon={<ChevronLeft className="w-4 h-4" />}
-              sx={{
-                fontWeight: 700,
-                fontSize: '0.8rem',
-                borderRadius: 2,
-              }}
-            >
-              Previous Lesson
-            </Button>
-          )}
-
-          <div className="flex items-center gap-1">
-            <Tooltip title="Rewind 10s" arrow>
-              <button
-                onClick={() => handleSeek(-10)}
-                className="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-              >
-                <Rewind className="w-4 h-4" />
-              </button>
-            </Tooltip>
-
-            <Tooltip title="Forward 10s" arrow>
-              <button
-                onClick={() => handleSeek(10)}
-                className="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-              >
-                <FastForward className="w-4 h-4" />
-              </button>
-            </Tooltip>
-
-            <Tooltip title="Reload Video Stream" arrow>
-              <button
-                onClick={handleReload}
-                className="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </button>
-            </Tooltip>
-
-            <Tooltip title="Fullscreen Mode" arrow>
-              <button
-                onClick={handleToggleFullscreen}
-                className="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-              >
-                <Maximize2 className="w-4 h-4" />
-              </button>
-            </Tooltip>
-          </div>
-        </div>
-
-        {/* Right Side: Timestamp Note, Complete Toggle, Next Lesson */}
-        <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-          {onInsertTimestampToNotes && (
-            <Tooltip title="Add timestamp bookmark to notes" arrow>
-              <button
-                onClick={() => onInsertTimestampToNotes(formattedCurrentTime)}
-                className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                <span className="hidden md:inline">Note @ {formattedCurrentTime}</span>
-              </button>
-            </Tooltip>
-          )}
-
-          <Button
-            size="small"
-            variant={isCompleted ? 'outlined' : 'contained'}
-            color={isCompleted ? 'success' : 'primary'}
+      {/* YouTube-style Horizontal Scrollable Action Pills Bar */}
+      <div className="py-2.5 px-3 sm:px-4 rounded-none sm:rounded-2xl bg-white dark:bg-slate-900 border-b sm:border border-slate-200/80 dark:border-slate-800/80 shadow-xs">
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
+          {/* 1. Mark Complete / Completed Pill */}
+          <button
             onClick={handleToggleComplete}
-            startIcon={<CheckCircle className="w-4 h-4" />}
-            sx={{
-              fontWeight: 700,
-              fontSize: '0.8rem',
-              borderRadius: 2,
-              px: 2,
-              py: 0.7,
-              boxShadow: isCompleted ? 0 : 2,
-              bgcolor: isCompleted ? 'rgba(16,185,129,0.1)' : '#4f46e5',
-              borderColor: isCompleted ? '#10b981' : undefined,
-              color: isCompleted ? '#10b981' : '#ffffff',
-            }}
+            className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition shadow-xs ${
+              isCompleted
+                ? 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700'
+                : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm'
+            }`}
           >
-            {isCompleted ? 'Completed ✓' : 'Mark Complete'}
-          </Button>
+            <CheckCircle className="w-3.5 h-3.5" />
+            <span>{isCompleted ? 'Completed ✓' : 'Mark Complete'}</span>
+          </button>
 
+          {/* 2. Next Lesson Pill */}
           {hasNext && onNextLesson && (
-            <Button
-              size="small"
-              variant="contained"
+            <button
               onClick={onNextLesson}
-              endIcon={<ChevronRight className="w-4 h-4" />}
-              sx={{
-                fontWeight: 700,
-                fontSize: '0.8rem',
-                borderRadius: 2,
-                px: 2,
-                py: 0.7,
-                bgcolor: '#4f46e5',
-                '&:hover': { bgcolor: '#4338ca' },
-              }}
+              className="flex-shrink-0 flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition"
             >
-              Next Lesson
-            </Button>
+              <span>Next Lesson</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
           )}
+
+          {/* 3. Previous Lesson Pill */}
+          {hasPrevious && onPreviousLesson && (
+            <button
+              onClick={onPreviousLesson}
+              className="flex-shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Previous</span>
+            </button>
+          )}
+
+          {/* 4. Timestamp Bookmark to Notes Pill */}
+          {onInsertTimestampToNotes && (
+            <button
+              onClick={() => onInsertTimestampToNotes(formattedCurrentTime)}
+              className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 transition"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span>Note @ {formattedCurrentTime}</span>
+            </button>
+          )}
+
+          {/* 5. Rewind -10s Pill */}
+          <button
+            onClick={() => handleSeek(-10)}
+            className="flex-shrink-0 p-1.5 px-2.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1"
+            title="Rewind 10s"
+          >
+            <Rewind className="w-3.5 h-3.5" />
+            <span>-10s</span>
+          </button>
+
+          {/* 6. Forward +10s Pill */}
+          <button
+            onClick={() => handleSeek(10)}
+            className="flex-shrink-0 p-1.5 px-2.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1"
+            title="Forward 10s"
+          >
+            <FastForward className="w-3.5 h-3.5" />
+            <span>+10s</span>
+          </button>
+
+          {/* 7. Reload Video Stream */}
+          <button
+            onClick={handleReload}
+            className="flex-shrink-0 p-1.5 px-2.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1"
+            title="Reload Video"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Reload</span>
+          </button>
+
+          {/* 8. Fullscreen Toggle */}
+          <button
+            onClick={handleToggleFullscreen}
+            className="flex-shrink-0 p-1.5 px-2.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1"
+            title="Fullscreen"
+          >
+            <Maximize2 className="w-3.5 h-3.5" />
+            <span>Fullscreen</span>
+          </button>
         </div>
       </div>
     </div>
   );
 };
+
 
 
