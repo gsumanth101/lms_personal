@@ -267,15 +267,15 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
 
       {/* YouTube-style Horizontal Scrollable Action Pills Bar */}
-      <div className="py-2.5 px-3 sm:px-4 rounded-none sm:rounded-2xl bg-white dark:bg-slate-900 border-b sm:border border-slate-200/80 dark:border-slate-800/80 shadow-xs">
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
+      <div className="py-2 px-2.5 sm:py-2.5 sm:px-4 rounded-none sm:rounded-2xl bg-white dark:bg-slate-900 border-b sm:border border-slate-200/80 dark:border-slate-800/80 shadow-xs">
+        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar scroll-smooth">
           {/* 1. Mark Complete / Completed Pill */}
           <button
             onClick={handleToggleComplete}
-            className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition shadow-xs ${
+            className={`flex-shrink-0 min-h-[38px] sm:min-h-[40px] flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-bold transition shadow-xs ${
               isCompleted
                 ? 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700'
-                : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm'
+                : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm active:scale-95'
             }`}
           >
             <CheckCircle className="w-3.5 h-3.5" />
@@ -286,7 +286,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           {hasNext && onNextLesson && (
             <button
               onClick={onNextLesson}
-              className="flex-shrink-0 flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition"
+              className="flex-shrink-0 min-h-[38px] sm:min-h-[40px] flex items-center gap-1 px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition active:scale-95"
             >
               <span>Next Lesson</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -297,7 +297,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           {hasPrevious && onPreviousLesson && (
             <button
               onClick={onPreviousLesson}
-              className="flex-shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition"
+              className="flex-shrink-0 min-h-[38px] sm:min-h-[40px] flex items-center gap-1 px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition active:scale-95"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
               <span>Previous</span>
@@ -308,7 +308,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           {onInsertTimestampToNotes && (
             <button
               onClick={() => onInsertTimestampToNotes(formattedCurrentTime)}
-              className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 transition"
+              className="flex-shrink-0 min-h-[38px] sm:min-h-[40px] flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 transition active:scale-95"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
               <span>Note @ {formattedCurrentTime}</span>
@@ -318,7 +318,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           {/* 5. Rewind -10s Pill */}
           <button
             onClick={() => handleSeek(-10)}
-            className="flex-shrink-0 p-1.5 px-2.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1"
+            className="flex-shrink-0 min-h-[38px] sm:min-h-[40px] px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1 active:scale-95"
             title="Rewind 10s"
           >
             <Rewind className="w-3.5 h-3.5" />
@@ -328,7 +328,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           {/* 6. Forward +10s Pill */}
           <button
             onClick={() => handleSeek(10)}
-            className="flex-shrink-0 p-1.5 px-2.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1"
+            className="flex-shrink-0 min-h-[38px] sm:min-h-[40px] px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1 active:scale-95"
             title="Forward 10s"
           >
             <FastForward className="w-3.5 h-3.5" />
@@ -338,18 +338,18 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           {/* 7. Reload Video Stream */}
           <button
             onClick={handleReload}
-            className="flex-shrink-0 p-1.5 px-2.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1"
+            className="flex-shrink-0 min-h-[38px] sm:min-h-[40px] px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1 active:scale-95"
             title="Reload Video"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Reload</span>
           </button>
 
-          {/* 8. Fullscreen Toggle */}
+          {/* 8. Fullscreen Toggle (Desktop Only: >768px, Hidden on Mobile) */}
           <button
             onClick={handleToggleFullscreen}
-            className="flex-shrink-0 p-1.5 px-2.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1"
-            title="Fullscreen"
+            className="hidden md:flex flex-shrink-0 min-h-[40px] px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition items-center gap-1 active:scale-95"
+            title="Fullscreen Mode"
           >
             <Maximize2 className="w-3.5 h-3.5" />
             <span>Fullscreen</span>
@@ -359,6 +359,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     </div>
   );
 };
+
 
 
 

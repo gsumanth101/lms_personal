@@ -8,22 +8,23 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const key = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../serviceAccountKey.json'), 'utf8'));
 
-if (!getApps().length) {
-  initializeApp({ credential: cert(key), projectId: key.project_id });
+function searchDir(dir) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      searchDir(fullPath);
+    } else if (entry.isFile() && (entry.name.endsWith('.ts') || entry.name.endsWith('.tsx') || entry.name.endsWith('.js') || entry.name.endsWith('.css'))) {
+      const content = fs.readFileSync(fullPath, 'utf8');
+      if (content.includes('requestFullscreen') || content.includes('webkitEnterFullscreen') || content.includes('orientation')) {
+        console.log(`Found in: ${fullPath}`);
+      }
+    }
+  }
 }
 
-const vercelConfig = {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
-};
+searchDir(path.resolve(__dirname, '../src'));
 
-fs.writeFileSync(path.resolve(__dirname, '../vercel.json'), JSON.stringify(vercelConfig, null, 2));
-console.log('Created vercel.json successfully!');
 
 
 
